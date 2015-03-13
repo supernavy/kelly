@@ -1,18 +1,17 @@
 package com.amazon.extension.testrail.commandhandler;
 
 import org.json.simple.JSONObject;
-import com.amazon.extension.testrail.api.TestrailAPI;
 import com.amazon.extension.testrail.command.DeleteTestPlanCommand;
-import com.amazon.extension.testrail.context.TestrailServiceContext;
+import com.amazon.extension.testrail.context.TestrailContext;
 import com.amazon.infra.commandbus.AbsCommandHandler;
 import com.amazon.infra.commandbus.CommandException;
 import com.amazon.infra.context.AppContextException;
 
 public class DeleteTestPlanCommandHandler extends AbsCommandHandler<DeleteTestPlanCommand, JSONObject>
 {
-    TestrailServiceContext testrailContext;
+    TestrailContext testrailContext;
         
-    public DeleteTestPlanCommandHandler(TestrailServiceContext testrailContext)
+    public DeleteTestPlanCommandHandler(TestrailContext testrailContext)
     {
         this.testrailContext = testrailContext;
     }
@@ -21,7 +20,7 @@ public class DeleteTestPlanCommandHandler extends AbsCommandHandler<DeleteTestPl
     public JSONObject handle(DeleteTestPlanCommand command) throws CommandException
     {
         try {
-            return testrailContext.sendPost(TestrailAPI.Method.DELETE_PLAN, new Object[]{command.getPlanId()}, null);
+            return testrailContext.deleteTestPlan(command.getPlanId());
         } catch (AppContextException e) {
             throw new CommandException(e);
         }
