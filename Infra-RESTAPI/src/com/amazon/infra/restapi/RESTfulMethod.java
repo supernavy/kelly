@@ -3,9 +3,12 @@ package com.amazon.infra.restapi;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 public abstract class RESTfulMethod<T>
 {
+    Logger logger = Logger.getLogger(getClass().getName());
+    
     public enum Action
     {
         GET, POST
@@ -36,19 +39,19 @@ public abstract class RESTfulMethod<T>
             switch (action) {
                 case GET:
                     if (data != null) {
-                        System.out.println(String.format("[Warning] data[%s] for GET should be null", data));
+                        logger.warning(String.format("[Warning] data[%s] for GET is not null", data));
                     }
                     return returnResult(client.sendGet(uri));
                 case POST:
                     if (data == null) {
-                        System.out.println(String.format("[Warning] data[%s] for Post should not be null", data));
+                        logger.warning(String.format("[Warning] data[%s] for Post is null", data));
                     }
                     return returnResult(client.sendPost(uri, data));
                 default:
                     throw new RuntimeException(String.format("Not supported Action[%s]", action));
             }
         } catch (Exception e) {
-            System.out.println(String.format("uri[%s], pathExtendValues=[%s], filters=[%s], data=[%s]", uri, pathExtendValues, filters, data));
+            logger.severe(String.format("uri[%s], pathExtendValues=[%s], filters=[%s], data=[%s]", uri, pathExtendValues, filters, data));
             throw new RESTfulMethodException(e);
         }
     }

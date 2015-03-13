@@ -2,11 +2,13 @@ package com.amazon.infra.restapi.type;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Logger;
 import com.amazon.infra.restapi.DataType;
 
 @SuppressWarnings("rawtypes")
 public class MapDataType<M extends Map, K> extends DataType<M>
 {
+    Logger logger = Logger.getLogger(getClass().getName());
     Map<K, DataType<?>> requiredValueTypes = new HashMap<K, DataType<?>>();
     Map<K, DataType<?>> optionalValueTypes = new HashMap<K, DataType<?>>();
 
@@ -53,11 +55,11 @@ public class MapDataType<M extends Map, K> extends DataType<M>
 
         for (K k : requiredValueTypes.keySet()) {
             if (!tempMap.containsKey(k)) {
-                System.out.println(String.format("Missing required key[%s] in [%s]", k, tempMap.keySet()));
+                logger.severe(String.format("Missing required key[%s] in [%s]", k, tempMap.keySet()));
                 return false;
             }
             if (!requiredValueTypes.get(k).instanceOf(tempMap.get(k))) {
-                System.out.println(String.format("Wrong required value[%s][%s]  for key[%s][%s]", tempMap.get(k), tempMap.get(k).getClass().getName(), k, requiredValueTypes.get(k)));
+                logger.severe(String.format("Wrong required value[%s][%s]  for key[%s][%s]", tempMap.get(k), tempMap.get(k).getClass().getName(), k, requiredValueTypes.get(k)));
                 return false;
             }
             tempMap.remove(k);
@@ -65,18 +67,18 @@ public class MapDataType<M extends Map, K> extends DataType<M>
 
         for (K k : optionalValueTypes.keySet()) {
             if (!tempMap.containsKey(k)) {
-                System.out.println(String.format("Missing optional key[%s] in [%s]. It is ok.", k, tempMap.keySet()));
+                logger.info(String.format("Missing optional key[%s] in [%s]. It is ok.", k, tempMap.keySet()));
                 continue;
             }
             if (tempMap.get(k) != null && !optionalValueTypes.get(k).instanceOf(tempMap.get(k))) {
-                System.out.println(String.format("Wrong optional value[%s][%s]  for key[%s][%s]", tempMap.get(k), tempMap.get(k).getClass().getName(), k, optionalValueTypes.get(k)));
+                logger.severe(String.format("Wrong optional value[%s][%s]  for key[%s][%s]", tempMap.get(k), tempMap.get(k).getClass().getName(), k, optionalValueTypes.get(k)));
                 return false;
             }
             tempMap.remove(k);
         }
 
         if (tempMap.size() > 0) {
-            System.out.println(String.format("Having unknown keys %s", tempMap.keySet()));
+            logger.info(String.format("Having unknown keys %s", tempMap.keySet()));
 //            return false;
         }
 

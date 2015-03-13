@@ -2,11 +2,14 @@ package com.amazon.infra.restapi.type;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Logger;
 import com.amazon.infra.restapi.DataType;
 
 @SuppressWarnings({"rawtypes","unchecked"})
 public class ListDataType<X extends List> extends DataType<X>
 {
+    Logger logger = Logger.getLogger(getClass().getName());
+    
     public static ListDataType<List> EMPTY = new ListDataType(List.class, new DataType<?>[]{}, new DataType<?>[]{});
     
     DataType<?>[] minimalValueTypes;
@@ -51,13 +54,12 @@ public class ListDataType<X extends List> extends DataType<X>
     public boolean validate(Object obj)
     {
         if (! super.validate(obj)) {
-            System.out.println("asdasdasd");
             return false;
         }
         int length = cast(obj).size();
         if(length>getMaxSize() || length<getMinSize())
         {
-            System.out.println(String.format("min[%d], max[%d], actual[%d]", getMinSize(), getMaxSize(), length));
+            logger.fine(String.format("min[%d], max[%d], actual[%d]", getMinSize(), getMaxSize(), length));
             return false;
         }
         
@@ -66,7 +68,6 @@ public class ListDataType<X extends List> extends DataType<X>
         {
             if(!getValueType(i).validate(l.get(i)))
             {
-                System.out.println("xxxxxxxxxxxxxxx");
                 return false;
             }
         }
