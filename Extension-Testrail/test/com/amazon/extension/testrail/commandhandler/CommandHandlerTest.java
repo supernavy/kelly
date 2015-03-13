@@ -17,7 +17,7 @@ public class CommandHandlerTest
     AppSystem testrailSystem;
     
     String url = "https://rcx-testrail.amazon.com/api.php?/api/v2";
-    String username = "rcx-testrail-automation@amazon.com";
+    String username = "supernavy_trash@sina.com";
     String password = "Test123";
     
     @BeforeTest
