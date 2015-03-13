@@ -1,10 +1,38 @@
 package com.amazon.extension.testrail.system;
 
 import com.amazon.extension.testrail.api.TestrailException;
-import com.amazon.extension.testrail.command.*;
-import com.amazon.extension.testrail.commandhandler.*;
-import com.amazon.extension.testrail.context.TestrailServiceContext;
-import com.amazon.extension.testrail.context.impl.TestrailServiceContextImpl;
+import com.amazon.extension.testrail.command.AddProjectCommand;
+import com.amazon.extension.testrail.command.AddResultForCaseCommand;
+import com.amazon.extension.testrail.command.AddTestPlanCommand;
+import com.amazon.extension.testrail.command.AddTestSuiteCommand;
+import com.amazon.extension.testrail.command.DeleteProjectCommand;
+import com.amazon.extension.testrail.command.DeleteTestPlanCommand;
+import com.amazon.extension.testrail.command.DeleteTestSuiteCommand;
+import com.amazon.extension.testrail.command.GetConfigurationsCommand;
+import com.amazon.extension.testrail.command.GetPrioritiesCommand;
+import com.amazon.extension.testrail.command.GetProjectCommand;
+import com.amazon.extension.testrail.command.GetTestCasesCommand;
+import com.amazon.extension.testrail.command.GetTestPlanCommand;
+import com.amazon.extension.testrail.command.GetTestSuiteCommand;
+import com.amazon.extension.testrail.command.GetTestsCommand;
+import com.amazon.extension.testrail.commandhandler.AddProjectCommandHandler;
+import com.amazon.extension.testrail.commandhandler.AddResultForCaseCommandHandler;
+import com.amazon.extension.testrail.commandhandler.AddTestPlanCommandHandler;
+import com.amazon.extension.testrail.commandhandler.AddTestSuiteCommandHandler;
+import com.amazon.extension.testrail.commandhandler.DeleteProjectCommandHandler;
+import com.amazon.extension.testrail.commandhandler.DeleteTestPlanCommandHandler;
+import com.amazon.extension.testrail.commandhandler.DeleteTestSuiteCommandHandler;
+import com.amazon.extension.testrail.commandhandler.GetConfigurationsCommandHandler;
+import com.amazon.extension.testrail.commandhandler.GetPrioritiesCommandHandler;
+import com.amazon.extension.testrail.commandhandler.GetProjectCommandHandler;
+import com.amazon.extension.testrail.commandhandler.GetTestCasesCommandHandler;
+import com.amazon.extension.testrail.commandhandler.GetTestPlanCommandHandler;
+import com.amazon.extension.testrail.commandhandler.GetTestSuiteCommandHandler;
+import com.amazon.extension.testrail.commandhandler.GetTestsCommandHandler;
+import com.amazon.extension.testrail.context.TestrailAPIContext;
+import com.amazon.extension.testrail.context.TestrailContext;
+import com.amazon.extension.testrail.context.impl.TestrailAPIContextImpl;
+import com.amazon.extension.testrail.context.impl.TestrailContextImpl;
 import com.amazon.infra.restapi.APIClient;
 import com.amazon.infra.system.AppSystem;
 import com.amazon.infra.system.AppSystemAssembler;
@@ -25,7 +53,8 @@ public class TestrailSystemAssembler implements AppSystemAssembler
     public void assemble(AppSystem system) throws AppSystemException
     {        
         try {
-            TestrailServiceContext testrailContext = new TestrailServiceContextImpl(system.getEventBus(), client);
+            TestrailAPIContext testrailAPIContext = new TestrailAPIContextImpl(client);
+            TestrailContext testrailContext = new TestrailContextImpl(system.getEventBus(), testrailAPIContext);
             system.getCommandBus().register(GetPrioritiesCommand.class, new GetPrioritiesCommandHandler(testrailContext));
 
             system.getCommandBus().register(AddProjectCommand.class, new AddProjectCommandHandler(testrailContext));

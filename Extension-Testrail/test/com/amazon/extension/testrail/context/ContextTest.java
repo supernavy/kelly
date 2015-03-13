@@ -7,7 +7,8 @@ import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 import com.amazon.extension.testrail.api.TestrailAPI;
-import com.amazon.extension.testrail.context.impl.TestrailServiceContextImpl;
+import com.amazon.extension.testrail.context.impl.TestrailAPIContextImpl;
+import com.amazon.extension.testrail.context.impl.TestrailContextImpl;
 import com.amazon.extension.testrail.system.SimpleTestrailSystem;
 import com.amazon.extension.testrail.system.TestrailSystemAssembler;
 import com.amazon.infra.restapi.APIClient;
@@ -17,7 +18,7 @@ import com.amazon.infra.system.AppSystem.Layer;
 public class ContextTest
 {
     AppSystem testrailSystem;
-    TestrailServiceContext context;
+    TestrailContext context;
     
     String url = "https://rcx-testrail.amazon.com/api.php?/api/v2";
     String username = "supernavy_trash@sina.com";
@@ -36,7 +37,8 @@ public class ContextTest
     {       
         testrailSystem = new SimpleTestrailSystem("Testrail System", Layer.Extension);
         new TestrailSystemAssembler(url, username, password).assemble(testrailSystem);
-        context = new TestrailServiceContextImpl(testrailSystem.getEventBus(), makeAPIClient());
+        TestrailAPIContext testrailAPIContext = new TestrailAPIContextImpl(makeAPIClient());
+        context = new TestrailContextImpl(testrailSystem.getEventBus(), testrailAPIContext);
     }
     
     @AfterTest
@@ -48,7 +50,7 @@ public class ContextTest
     {
         Long projectId = 2L;
         JSONObject request = makeAddTestPlanRequest(projectId);
-        JSONObject response = context.sendPost(TestrailAPI.Method.ADD_PLAN, new Object[]{projectId}, request);
+        JSONObject response = context.addTestPlan(projectId, request);
         Assert.assertNotNull(response);
         Assert.assertNotNull(response.get(TestrailAPI.Key.Id));
     }
