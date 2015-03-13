@@ -61,10 +61,8 @@ public class ContextTest
     IntegTestrailContext integTestrailContext;
 
     String url = "https://rcx-testrail.amazon.com/api.php?/api/v2";
-//    String username = "rcx-testrail-automation@amazon.com";
-//    String password = "Test123";
-    String username = "lihaijun@amazon.com";
-    String password = "790929";
+    String username = "rcx-testrail-automation@amazon.com";
+    String password = "Test123";
     
     @BeforeTest
     public void init() throws Exception
