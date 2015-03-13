@@ -7,6 +7,12 @@ import org.json.simple.JSONObject;
 import com.amazon.extension.testrail.api.TestrailAPI;
 import com.amazon.extension.testrail.context.TestrailAPIContext;
 import com.amazon.extension.testrail.context.TestrailContext;
+import com.amazon.extension.testrail.event.ProjectAddedEvent;
+import com.amazon.extension.testrail.event.ProjectDeletedEvent;
+import com.amazon.extension.testrail.event.TestPlanAddedEvent;
+import com.amazon.extension.testrail.event.TestPlanDeletedEvent;
+import com.amazon.extension.testrail.event.TestSuiteAddedEvent;
+import com.amazon.extension.testrail.event.TestSuiteDeletedEvent;
 import com.amazon.infra.context.AbsAppContextImpl;
 import com.amazon.infra.context.AppContextException;
 import com.amazon.infra.eventbus.EventBus;
@@ -37,13 +43,17 @@ public class TestrailContextImpl extends AbsAppContextImpl implements TestrailCo
     @Override
     public JSONObject getProject(Long id) throws AppContextException
     {
-        return testrailAPIContext.sendGet(TestrailAPI.Method.GET_PROJECT, new Object[]{id}, null);
+        JSONObject p = testrailAPIContext.sendGet(TestrailAPI.Method.GET_PROJECT, new Object[]{id}, null);
+        publishEvent(new ProjectAddedEvent((Long) p.get(TestrailAPI.Key.Id)));
+        return p;
     }
 
     @Override
     public JSONObject deleteProject(Long id) throws AppContextException
     {
-        return testrailAPIContext.sendPost(TestrailAPI.Method.DELETE_PROJECT, new Object[]{id}, null);
+        JSONObject p = testrailAPIContext.sendPost(TestrailAPI.Method.DELETE_PROJECT, new Object[]{id}, null);
+        publishEvent(new ProjectDeletedEvent(id));
+        return p;
     }
 
     @Override
@@ -67,7 +77,9 @@ public class TestrailContextImpl extends AbsAppContextImpl implements TestrailCo
     @Override
     public JSONObject addTestSuite(Long projectId, JSONObject data) throws AppContextException
     {
-        return testrailAPIContext.sendPost(TestrailAPI.Method.ADD_SUITE, new Object[]{projectId}, data);
+        JSONObject s = testrailAPIContext.sendPost(TestrailAPI.Method.ADD_SUITE, new Object[]{projectId}, data);
+        publishEvent(new TestSuiteAddedEvent(projectId, (Long) s.get(TestrailAPI.Key.Id)));
+        return s;
     }
 
     @Override
@@ -79,7 +91,9 @@ public class TestrailContextImpl extends AbsAppContextImpl implements TestrailCo
     @Override
     public JSONObject deleteTestSuite(Long id) throws AppContextException
     {
-        return testrailAPIContext.sendPost(TestrailAPI.Method.DELETE_SUITE, new Object[]{id}, null);
+        JSONObject s = testrailAPIContext.sendPost(TestrailAPI.Method.DELETE_SUITE, new Object[]{id}, null);
+        publishEvent(new TestSuiteDeletedEvent(id));
+        return s;
     }
 
     @Override
@@ -105,7 +119,9 @@ public class TestrailContextImpl extends AbsAppContextImpl implements TestrailCo
     @Override
     public JSONObject addTestPlan(Long projectId, JSONObject data) throws AppContextException
     {
-        return testrailAPIContext.sendPost(TestrailAPI.Method.ADD_PLAN, new Object[]{projectId}, data);
+        JSONObject tp = testrailAPIContext.sendPost(TestrailAPI.Method.ADD_PLAN, new Object[]{projectId}, data);
+        publishEvent(new TestPlanAddedEvent(projectId, (Long) tp.get(TestrailAPI.Key.Id)));
+        return tp;
     }
 
     @Override
@@ -117,7 +133,9 @@ public class TestrailContextImpl extends AbsAppContextImpl implements TestrailCo
     @Override
     public JSONObject deleteTestPlan(Long id) throws AppContextException
     {
-        return testrailAPIContext.sendPost(TestrailAPI.Method.DELETE_PLAN, new Object[]{id}, null);
+        JSONObject tp = testrailAPIContext.sendPost(TestrailAPI.Method.DELETE_PLAN, new Object[]{id}, null);
+        publishEvent(new TestPlanDeletedEvent(id));
+        return tp;
     }
 
     @Override
