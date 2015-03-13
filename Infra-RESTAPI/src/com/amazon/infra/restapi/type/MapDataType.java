@@ -67,7 +67,7 @@ public class MapDataType<M extends Map, K> extends DataType<M>
 
         for (K k : optionalValueTypes.keySet()) {
             if (!tempMap.containsKey(k)) {
-                logger.info(String.format("Missing optional key[%s] in [%s]. It is ok.", k, tempMap.keySet()));
+                logger.warning(String.format("Missing optional key[%s] in [%s]. It is ok.", k, tempMap.keySet()));
                 continue;
             }
             if (tempMap.get(k) != null && !optionalValueTypes.get(k).instanceOf(tempMap.get(k))) {
@@ -78,7 +78,7 @@ public class MapDataType<M extends Map, K> extends DataType<M>
         }
 
         if (tempMap.size() > 0) {
-            logger.info(String.format("Having unknown keys %s", tempMap.keySet()));
+            logger.warning(String.format("Having unknown keys %s", tempMap.keySet()));
 //            return false;
         }
 

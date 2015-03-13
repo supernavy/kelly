@@ -39,12 +39,12 @@ public abstract class RESTfulMethod<T>
             switch (action) {
                 case GET:
                     if (data != null) {
-                        logger.warning(String.format("[Warning] data[%s] for GET is not null", data));
+                        logger.warning(String.format("data[%s] for GET is not null", data));
                     }
                     return returnResult(client.sendGet(uri));
                 case POST:
                     if (data == null) {
-                        logger.warning(String.format("[Warning] data[%s] for Post is null", data));
+                        logger.warning(String.format("data[%s] for Post is null", data));
                     }
                     return returnResult(client.sendPost(uri, data));
                 default:

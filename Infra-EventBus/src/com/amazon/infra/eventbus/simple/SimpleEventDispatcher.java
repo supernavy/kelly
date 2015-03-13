@@ -86,7 +86,7 @@ public class SimpleEventDispatcher
                         logger.fine(String.format("handler numbers %s for %s", handlersNumber, eventDistribution));
                         for (int i = 0; i < handlersNumber; i++) {
                             ehd = subDistributions.get(i);
-                            logger.info(String.format("dispatch id[%s] event[%s] to handler[%s]", eventDistribution.getId(), eventDistribution.getData().getEvent(), ehd.getHandler()));
+                            logger.fine(String.format("dispatch id[%s] event[%s] to handler[%s]", eventDistribution.getId(), eventDistribution.getData().getEvent(), ehd.getHandler()));
                             Method m = null;
                             try {
                                 m = ehd.getHandler().getClass().getMethod("handle", new Class<?>[] { ehd.getHandler().getEventType() });
