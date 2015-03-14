@@ -17,6 +17,7 @@ public interface TestrailContext
     public JSONObject getSection(Long id) throws AppContextException;
     
     public JSONObject addTestSuite(Long projectId, JSONObject data) throws AppContextException;
+    public JSONObject updateTestSuite(Long suiteId, JSONObject data) throws AppContextException;
     public JSONObject getTestSuite(Long id) throws AppContextException;
     public JSONObject deleteTestSuite(Long id) throws AppContextException;
     

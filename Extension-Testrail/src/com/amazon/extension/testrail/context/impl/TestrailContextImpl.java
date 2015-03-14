@@ -156,4 +156,10 @@ public class TestrailContextImpl extends AbsAppContextImpl implements TestrailCo
         throw new NotImplementedException();
     }
 
+    @Override
+    public JSONObject updateTestSuite(Long suiteId, JSONObject data) throws AppContextException
+    {
+        return testrailAPIContext.sendPost(TestrailAPI.Method.UPDATE_SUITE, new Object[]{suiteId}, data);
+    }
+
 }

@@ -15,6 +15,7 @@ import com.amazon.extension.testrail.command.GetTestCasesCommand;
 import com.amazon.extension.testrail.command.GetTestPlanCommand;
 import com.amazon.extension.testrail.command.GetTestSuiteCommand;
 import com.amazon.extension.testrail.command.GetTestsCommand;
+import com.amazon.extension.testrail.command.UpdateTestSuiteCommand;
 import com.amazon.extension.testrail.commandhandler.AddProjectCommandHandler;
 import com.amazon.extension.testrail.commandhandler.AddResultForCaseCommandHandler;
 import com.amazon.extension.testrail.commandhandler.AddTestPlanCommandHandler;
@@ -29,6 +30,7 @@ import com.amazon.extension.testrail.commandhandler.GetTestCasesCommandHandler;
 import com.amazon.extension.testrail.commandhandler.GetTestPlanCommandHandler;
 import com.amazon.extension.testrail.commandhandler.GetTestSuiteCommandHandler;
 import com.amazon.extension.testrail.commandhandler.GetTestsCommandHandler;
+import com.amazon.extension.testrail.commandhandler.UpdateTestSuiteCommandHandler;
 import com.amazon.extension.testrail.context.TestrailAPIContext;
 import com.amazon.extension.testrail.context.TestrailContext;
 import com.amazon.extension.testrail.context.impl.TestrailAPIContextImpl;
@@ -69,6 +71,7 @@ public class TestrailSystemAssembler implements AppSystemAssembler
             system.getCommandBus().register(AddResultForCaseCommand.class, new AddResultForCaseCommandHandler(testrailContext));
             
             system.getCommandBus().register(AddTestSuiteCommand.class, new AddTestSuiteCommandHandler(testrailContext));
+            system.getCommandBus().register(UpdateTestSuiteCommand.class, new UpdateTestSuiteCommandHandler(testrailContext));
             system.getCommandBus().register(GetTestSuiteCommand.class, new GetTestSuiteCommandHandler(testrailContext));
             system.getCommandBus().register(DeleteTestSuiteCommand.class, new DeleteTestSuiteCommandHandler(testrailContext));
             system.getCommandBus().register(GetTestCasesCommand.class, new GetTestCasesCommandHandler(testrailContext));

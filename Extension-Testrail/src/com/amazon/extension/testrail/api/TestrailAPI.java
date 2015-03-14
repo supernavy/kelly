@@ -378,10 +378,19 @@ public class TestrailAPI
         public static PostMethod<JSONObject> ADD_SUITE;
         static {
             /*
-             * initialize ADD_PROJECT
+             * initialize ADD_SUITE
              */
             ADD_SUITE = new PostMethod<JSONObject>("/add_suite", 1, 1, Type.AddSuiteRequest);//projectId
             ADD_SUITE.setReturnDataType(Type.Suite);
+        }
+        
+        public static PostMethod<JSONObject> UPDATE_SUITE;
+        static {
+            /*
+             * initialize UPDATE_SUITE
+             */
+            UPDATE_SUITE = new PostMethod<JSONObject>("/update_suite", 1, 1, Type.AddSuiteRequest);//suiteid
+            UPDATE_SUITE.setReturnDataType(Type.Suite);
         }
         
         public static PostMethod<JSONObject> DELETE_SUITE;
