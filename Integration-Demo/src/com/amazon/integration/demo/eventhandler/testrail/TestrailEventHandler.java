@@ -1,4 +1,4 @@
-package com.amazon.integration.demo.eventhandler;
+package com.amazon.integration.demo.eventhandler.testrail;
 
 import java.util.logging.Logger;
 import com.amazon.extension.testrail.event.ResultAddedForCaseEvent;
