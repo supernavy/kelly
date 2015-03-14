@@ -38,13 +38,23 @@ import com.amazon.core.rm.command.CreateBuildCommand;
 import com.amazon.core.rm.domain.entity.Build;
 import com.amazon.core.rm.system.ReleaseSystemAssembler;
 import com.amazon.core.rm.system.SimpleReleaseSystem;
+import com.amazon.extension.testrail.api.TestCaseSelector;
 import com.amazon.extension.testrail.api.TestrailAPI;
 import com.amazon.extension.testrail.command.DeleteTestPlanCommand;
 import com.amazon.extension.testrail.command.DeleteTestSuiteCommand;
+import com.amazon.extension.testrail.command.GetTestCasesCommand;
+import com.amazon.extension.testrail.command.GetTestSuiteCommand;
 import com.amazon.extension.testrail.command.GetTestsCommand;
+import com.amazon.extension.testrail.command.UpdateTestSuiteCommand;
+import com.amazon.extension.testrail.event.TestSuiteAddedEvent;
 import com.amazon.extension.testrail.system.SimpleTestrailSystem;
 import com.amazon.extension.testrail.system.TestrailSystemAssembler;
+import com.amazon.infra.commandbus.CommandBus;
+import com.amazon.infra.commandbus.CommandBusException;
+import com.amazon.infra.commandbus.CommandException;
 import com.amazon.infra.domain.Entity;
+import com.amazon.infra.eventbus.AbsEventHandler;
+import com.amazon.infra.eventbus.EventHandlerException;
 import com.amazon.infra.eventbus.GenericEventHandler;
 import com.amazon.infra.system.AppSystem;
 import com.amazon.infra.system.AppSystem.Layer;
@@ -230,13 +240,20 @@ public class CommandHandlerTest
     public void testTriggerDemoPlanForCart_UseExistingCartProject() throws Exception
     {
         boolean interactive = true;
-        GenericEventHandler<IntegQAProjectCreatedEvent> integQAProjectCreatedEventHandler = new GenericEventHandler<IntegQAProjectCreatedEvent>(IntegQAProjectCreatedEvent.class);
-        GenericEventHandler<IntegQAProjectPlanAddedEvent> integQAProjectPlanAddedEventHandler = new GenericEventHandler<IntegQAProjectPlanAddedEvent>(IntegQAProjectPlanAddedEvent.class);
-        GenericEventHandler<IntegQAPlanRunAddedEvent> integQAPlanRunAddedEventHandler = new GenericEventHandler<IntegQAPlanRunAddedEvent>(IntegQAPlanRunAddedEvent.class);
+        GenericEventHandler<IntegQAProjectCreatedEvent> demoIntegQAProjectCreatedEventHandler = new GenericEventHandler<IntegQAProjectCreatedEvent>(IntegQAProjectCreatedEvent.class);
+        GenericEventHandler<IntegQAProjectPlanAddedEvent> demoIntegQAProjectPlanAddedEventHandler = new GenericEventHandler<IntegQAProjectPlanAddedEvent>(IntegQAProjectPlanAddedEvent.class);
+        GenericEventHandler<IntegQAPlanRunAddedEvent> demoIntegQAPlanRunAddedEventHandler = new GenericEventHandler<IntegQAPlanRunAddedEvent>(IntegQAPlanRunAddedEvent.class);
+        GenericEventHandler<TestSuiteAddedEvent> testrailTestSuiteAddedEventHandler = new GenericEventHandler<TestSuiteAddedEvent>(TestSuiteAddedEvent.class);
         
-        demoSystem.getEventBus().registerEventHandler(IntegQAProjectCreatedEvent.class, integQAProjectCreatedEventHandler);
-        demoSystem.getEventBus().registerEventHandler(IntegQAProjectPlanAddedEvent.class, integQAProjectPlanAddedEventHandler);
-        demoSystem.getEventBus().registerEventHandler(IntegQAPlanRunAddedEvent.class, integQAPlanRunAddedEventHandler);
+        demoSystem.getEventBus().registerEventHandler(IntegQAProjectCreatedEvent.class, demoIntegQAProjectCreatedEventHandler);
+        demoSystem.getEventBus().registerEventHandler(IntegQAProjectPlanAddedEvent.class, demoIntegQAProjectPlanAddedEventHandler);
+        demoSystem.getEventBus().registerEventHandler(IntegQAPlanRunAddedEvent.class, demoIntegQAPlanRunAddedEventHandler);       
+        testrailSystem.getEventBus().registerEventHandler(TestSuiteAddedEvent.class, testrailTestSuiteAddedEventHandler);
+        
+        /**
+         * This event handler will emulate the manual process of deciding whether or not create testrail plan for newly addded logical plan
+         */
+        demoSystem.getEventBus().registerEventHandler(IntegQAProjectPlanAddedEvent.class, new MyIntegQAProjectPlanAddedEventHandler(demoSystem.getCommandBus()));
         
         /**
          * create product
@@ -255,9 +272,9 @@ public class CommandHandlerTest
         /**
          * wait for the integQAProject is created by the demo system automatically by event listener
          */
-        integQAProjectCreatedEventHandler.waitUntilInvokedOrTimeout(5);
+        demoIntegQAProjectCreatedEventHandler.waitUntilInvokedOrTimeout(5);
         Entity<IntegQAProject> integQAProjectEntity = demoSystem.getCommandBus().submit(new GetIntegQAProjectCommand(qaProjectEntity.getId())).getResult();
-        Assert.assertEquals(integQAProjectEntity.getId(), integQAProjectCreatedEventHandler.getEvent().getIntegQAProjectId());
+        Assert.assertEquals(integQAProjectEntity.getId(), demoIntegQAProjectCreatedEventHandler.getEvent().getIntegQAProjectId());
         
         /**
          * associate the testrail project and plan id for the plan we created.
@@ -281,17 +298,25 @@ public class CommandHandlerTest
         /**
          * wait the IntegQAProject is updated automatically by event listener
          */
-        integQAProjectPlanAddedEventHandler.waitUntilInvokedOrTimeout(5);
+        demoIntegQAProjectPlanAddedEventHandler.waitUntilInvokedOrTimeout(5);
         integQAProjectEntity = demoSystem.getCommandBus().submit(new GetIntegQAProjectCommand(qaProjectEntity.getId())).getResult();
-        Assert.assertTrue(integQAProjectEntity.getData().getPlanSuiteIds().containsKey(integQAProjectPlanAddedEventHandler.getEvent().getPlanName()), integQAProjectEntity.getData().getPlanSuiteIds()+" "+integQAProjectPlanAddedEventHandler.getEvent().getPlanName());
-        
+        Assert.assertTrue(integQAProjectEntity.getData().getPlanSuiteIds().containsKey(demoIntegQAProjectPlanAddedEventHandler.getEvent().getPlanName()), integQAProjectEntity.getData().getPlanSuiteIds()+" "+demoIntegQAProjectPlanAddedEventHandler.getEvent().getPlanName());
+               
         /**
-         * create testsuite in testrail 
+         * wait the testrail suite is created automatically
          */
-        JSONObject testrailTestSuite = demoSystem.getCommandBus().submit(new AddTestrailSuiteCommand(qaProjectEntity.getId(), plan.getName())).getResult();
-        System.out.println("testrail testsuite created. "+testrailTestSuite.toJSONString());
-        
-        checkpoint(interactive, "type a character to confirm that you have added some tests that satisfy (Locale.US, Platform.Desktop, Browser.Firefox, View.Desktop, Priority.P1) in the newly created testsuite in testrail");
+        testrailTestSuiteAddedEventHandler.waitUntilInvokedOrTimeout(5);
+        checkpoint(interactive, "type a character to start adding tests ");
+        copyCasesIntoSuite(2L, testrailTestSuiteAddedEventHandler.getEvent().getSuiteId(), 21L, new TestCaseSelector()       
+        {           
+            @Override
+            public boolean matches(JSONObject testCase)
+            {
+                if(testCase.get(TestrailAPI.Key.Priority_Id).equals(Priority.HiP0))
+                    return true;
+                return false;
+            }
+        });
         
         checkpoint(interactive, "type a character to start adding a build.");
         
@@ -314,7 +339,7 @@ public class CommandHandlerTest
         /**
          * wait the QAPlanRun is created automatically by event listener. Then populate testrail testplan
          */
-        integQAPlanRunAddedEventHandler.waitUntilInvokedOrTimeout(5);
+        demoIntegQAPlanRunAddedEventHandler.waitUntilInvokedOrTimeout(5);
         JSONObject addedTestrailTestPlan = demoSystem.getCommandBus().submit(new AddTestrailPlanCommand(qaPlanRunEntity.getId())).getResult(60);
         Assert.assertNotNull(addedTestrailTestPlan);
         
@@ -355,7 +380,7 @@ public class CommandHandlerTest
          * delete the suite and plan we created
          */
         testrailSystem.getCommandBus().submit(new DeleteTestPlanCommand((Long) testrailTestPlan.get(TestrailAPI.Key.Id))).getResult();
-        testrailSystem.getCommandBus().submit(new DeleteTestSuiteCommand((Long) testrailTestSuite.get(TestrailAPI.Key.Id))).getResult();
+        testrailSystem.getCommandBus().submit(new DeleteTestSuiteCommand(testrailTestSuiteAddedEventHandler.getEvent().getSuiteId())).getResult();
         System.out.println("finished deleting the testplan and testsuite in testrail");
     }
     
@@ -441,6 +466,49 @@ public class CommandHandlerTest
     private PlanEntry makePlanEntry(String entryBaseName, Entity<TestSuite> testSuiteInfo, Locale locale, Platform platform, Browser browser, View view, Priority priority)
     {
         return makePlanEntry(entryBaseName, null, testSuiteInfo, locale, platform, browser, view, priority);
+    }
+    
+    public class MyIntegQAProjectPlanAddedEventHandler extends AbsEventHandler<IntegQAProjectPlanAddedEvent>
+    {
+        CommandBus demoSystemCommandBus;      
+        
+        public MyIntegQAProjectPlanAddedEventHandler(CommandBus demoSystemCommandBus)
+        {
+            this.demoSystemCommandBus = demoSystemCommandBus;
+        }
+
+        @Override
+        public void handle(IntegQAProjectPlanAddedEvent event) throws EventHandlerException
+        {
+            JSONObject testrailTestSuite;
+            try {
+                testrailTestSuite = demoSystem.getCommandBus().submit(new AddTestrailSuiteCommand(event.getQaProjectId(), event.getPlanName())).getResult();
+                System.out.println("testrail testsuite created. " + testrailTestSuite.toJSONString());
+            } catch (Exception e) {
+                throw new EventHandlerException(e);
+            }
+        }        
+    }
+    
+    @SuppressWarnings("unchecked")
+    private void copyCasesIntoSuite(Long projectId, Long suiteId, Long fromSuiteId,TestCaseSelector testCaseSelector) throws CommandException, CommandBusException
+    {
+            JSONObject testSuite = testrailSystem.getCommandBus().submit(new GetTestSuiteCommand(suiteId)).getResult();
+            JSONArray testCaseArray = testrailSystem.getCommandBus().submit(new GetTestCasesCommand(fromSuiteId, projectId)).getResult();
+            JSONArray selectedTestCaseArray = new JSONArray();
+            for (Object o : testCaseArray) {
+                JSONObject testCase = (JSONObject) o;
+                if (testCaseSelector.matches(testCase)) {
+                    selectedTestCaseArray.add(testCase.get(TestrailAPI.Key.Id));
+                }
+            }
+            if (selectedTestCaseArray.size() > 0) {
+                testSuite.put(TestrailAPI.Key.Case_Ids, selectedTestCaseArray);
+                JSONObject updatedTestSuite = testrailSystem.getCommandBus().submit(new UpdateTestSuiteCommand(suiteId, testSuite)).getResult();
+                System.out.println(updatedTestSuite.get(TestrailAPI.Key.Case_Ids));
+            } else {
+                System.out.println("no case is selected");
+            }
     }
 }
 

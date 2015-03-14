@@ -45,7 +45,7 @@ public class IntegContextImpl extends AbsAppContextImpl implements IntegContext
     {
         try {
             Entity<IntegQAPlanRun> integQAPlanRunEntity = integQAPlanRunRepo.createEntity(new IntegQAPlanRun(qaPlanRunId, testrailTestPlanId));
-            publishEvent(new IntegQAPlanRunAddedEvent(integQAPlanRunEntity.getId()));
+            publishEvent(new IntegQAPlanRunAddedEvent(integQAPlanRunEntity.getId(), qaPlanRunId));
             return integQAPlanRunEntity;
         } catch (RepositoryException e) {
             throw new AppContextException(e);
@@ -81,7 +81,7 @@ public class IntegContextImpl extends AbsAppContextImpl implements IntegContext
         logger.fine(String.format("qaProjectId[%s], testrailProjectId[%s]",qaProjectId,testrailProjectId));
         try {
             Entity<IntegQAProject> integQAProjectEntity = integQAProjectRepo.createEntity(new IntegQAProject(qaProjectId, testrailProjectId, null));
-            publishEvent(new IntegQAProjectCreatedEvent(integQAProjectEntity.getId()));
+            publishEvent(new IntegQAProjectCreatedEvent(integQAProjectEntity.getId(), qaProjectId));
             logger.fine(String.format("created entity[%s]",integQAProjectEntity));
             return integQAProjectEntity;
         } catch (RepositoryException e) {
@@ -146,7 +146,7 @@ public class IntegContextImpl extends AbsAppContextImpl implements IntegContext
         try {
             Entity<IntegQAProject> integQAProjectEntity = loadIntegQAProject(qaProjectId);
             integQAProjectEntity =  integQAProjectRepo.updateEntity(integQAProjectEntity.getId(), integQAProject);
-            publishEvent(new IntegQAProjectUpdatedEvent(integQAProjectEntity.getId()));
+            publishEvent(new IntegQAProjectUpdatedEvent(integQAProjectEntity.getId(), qaProjectId));
             return integQAProjectEntity;
         } catch (Exception e) {
             throw new AppContextException(e);
@@ -159,7 +159,7 @@ public class IntegContextImpl extends AbsAppContextImpl implements IntegContext
         try {
             Entity<IntegQAPlanRun> integQAPlanRunEntity = loadIntegQAPlanRun(qaPlanRunId);
             integQAPlanRunEntity =  integQAPlanRunRepo.updateEntity(integQAPlanRunEntity.getId(), integQAPlanRun);
-            publishEvent(new IntegQAPlanRunUpdatedEvent(integQAPlanRunEntity.getId()));
+            publishEvent(new IntegQAPlanRunUpdatedEvent(integQAPlanRunEntity.getId(), qaPlanRunId));
             return integQAPlanRunEntity;
         } catch (Exception e) {
             throw new AppContextException(e);
@@ -174,7 +174,7 @@ public class IntegContextImpl extends AbsAppContextImpl implements IntegContext
         integQAProjectPlans.put(planName, testrailSuiteId);
         IntegQAProject integQAProject = new IntegQAProject(qaProjectId, integQAProjectEntity.getData().getTestrailProjectId(), integQAProjectPlans);
         Entity<IntegQAProject> updatedIntegQAProjectEntity = updateIntegQAProject(qaProjectId, integQAProject);
-        publishEvent(new IntegQAProjectPlanAddedEvent(updatedIntegQAProjectEntity.getId(), planName));
+        publishEvent(new IntegQAProjectPlanAddedEvent(updatedIntegQAProjectEntity.getId(), qaProjectId, planName));
         return updatedIntegQAProjectEntity;
     }
 
@@ -186,7 +186,7 @@ public class IntegContextImpl extends AbsAppContextImpl implements IntegContext
         integQAProjectPlans.remove(planName);
         IntegQAProject integQAProject = new IntegQAProject(qaProjectId, integQAProjectEntity.getData().getTestrailProjectId(), integQAProjectPlans);
         Entity<IntegQAProject> updatedIntegQAProjectEntity = updateIntegQAProject(qaProjectId, integQAProject);
-        publishEvent(new IntegQAProjectPlanDeletedEvent(updatedIntegQAProjectEntity.getId(), planName));
+        publishEvent(new IntegQAProjectPlanDeletedEvent(updatedIntegQAProjectEntity.getId(), qaProjectId, planName));
         return updatedIntegQAProjectEntity;
     }
 }

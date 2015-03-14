@@ -2,16 +2,21 @@ package com.amazon.integration.demo.event;
 
 public class IntegQAPlanRunUpdatedEvent implements IntegEvent
 {
-    String integQAProjectId;
+    String integQAPlanRunId;
+    String qaPlanRunId;
 
-    public IntegQAPlanRunUpdatedEvent(String integQAProjectId)
+    public IntegQAPlanRunUpdatedEvent(String integQAPlanRunId, String qaPlanRunId)
     {
-        this.integQAProjectId = integQAProjectId;
+        this.integQAPlanRunId = integQAPlanRunId;
+        this.qaPlanRunId = qaPlanRunId;
     }
 
     public String getIntegQAProjectId()
     {
-        return integQAProjectId;
+        return integQAPlanRunId;
     }
-    
+    public String getQaPlanRunId()
+    {
+        return qaPlanRunId;
+    }
 }
