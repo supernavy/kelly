@@ -193,7 +193,7 @@ public class SimpleCommandBus implements CommandBus
     public <T extends Command<R>, R> CommandResult<R> submit(T command) throws CommandBusException
     {
         String id = send(command);
-        CommandResult<R> commandResult = new CommandResult<>(this, executionService, id, command.getReturnType());
+        CommandResult<R> commandResult = new CommandResult<R>(this, executionService, id, command.getReturnType());
         return commandResult;
     }
 }

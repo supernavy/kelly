@@ -192,7 +192,7 @@ public class TestrailAPI
         public static JSONObjectDataType AddResultForCaseRequest;
         static {
             Map<String, DataType<?>> requiredValueType = new HashMap<String, DataType<?>>();
-            requiredValueType.put(Key.Status_Id, new EnumDataType<>(PrimitiveDataType.LONG, new Long[] { 1L, 2L, 3L, 4L, 5L }));
+            requiredValueType.put(Key.Status_Id, new EnumDataType<Long>(PrimitiveDataType.LONG, new Long[] { 1L, 2L, 3L, 4L, 5L }));
             requiredValueType.put(Key.Comment, PrimitiveDataType.STRING);
 //            requiredValueType.put(Key.Version, PrimitiveDataType.STRING);
 //            requiredValueType.put(Key.Elapsed, PrimitiveDataType.STRING);
@@ -206,7 +206,7 @@ public class TestrailAPI
         static {
             JSONArrayDataType<JSONObject> resultsType;
             Map<String, DataType<?>> requiredValueType = new HashMap<String, DataType<?>>();
-            requiredValueType.put(Key.Status_Id, new EnumDataType<>(PrimitiveDataType.LONG, new Long[] { 1L, 2L, 3L, 4L, 5L }));
+            requiredValueType.put(Key.Status_Id, new EnumDataType<Long>(PrimitiveDataType.LONG, new Long[] { 1L, 2L, 3L, 4L, 5L }));
             requiredValueType.put(Key.Comment, PrimitiveDataType.STRING);
             requiredValueType.put(Key.Version, PrimitiveDataType.STRING);
             requiredValueType.put(Key.Elapsed, PrimitiveDataType.LONG);
@@ -227,7 +227,7 @@ public class TestrailAPI
             Map<String, DataType<?>> requiredValueType = new HashMap<String, DataType<?>>();
             requiredValueType.put(Key.Id, PrimitiveDataType.LONG);
             requiredValueType.put(Key.Test_Id, PrimitiveDataType.LONG);
-            requiredValueType.put(Key.Status_Id, new EnumDataType<>(PrimitiveDataType.LONG, new Long[] { 1L, 2L, 3L, 4L, 5L }));
+            requiredValueType.put(Key.Status_Id, new EnumDataType<Long>(PrimitiveDataType.LONG, new Long[] { 1L, 2L, 3L, 4L, 5L }));
             requiredValueType.put(Key.Version, PrimitiveDataType.STRING);
             requiredValueType.put(Key.Elapsed, PrimitiveDataType.STRING);
             requiredValueType.put(Key.Created_By, PrimitiveDataType.LONG);
@@ -240,7 +240,7 @@ public class TestrailAPI
             Result = new JSONObjectDataType(requiredValueType, optionalValueType);
         }
 
-        public static JSONArrayDataType<JSONObject> Results = new JSONArrayDataType<>(Result);
+        public static JSONArrayDataType<JSONObject> Results = new JSONArrayDataType<JSONObject>(Result);
         
         public static JSONObjectDataType AddProjectRequest;
         static {

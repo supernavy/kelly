@@ -67,7 +67,7 @@ public class RepositoryFileImpl<T> implements Repository<T>
                 Entity<T> e = (Entity<T>) ois.readObject();
                 cache.put(e.getId(), e);
             }
-        } catch (IOException | ClassNotFoundException e) {
+        } catch (Exception e) {
             throw new RepositoryException(e);
         } finally {
             try {
