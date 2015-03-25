@@ -1,9 +1,14 @@
 package com.amazon.infra.repository.impl;
 
+import java.io.Serializable;
 import com.amazon.infra.domain.Entity;
 
-public class EntityImpl<X> implements Entity<X>
+public class EntityImpl<X> implements Entity<X>, Serializable
 {
+    /**
+     * TODO
+     */
+    private static final long serialVersionUID = 9105628882810579248L;
     String id;
     X body;
 

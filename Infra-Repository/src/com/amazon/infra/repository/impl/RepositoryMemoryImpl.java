@@ -1,9 +1,9 @@
 package com.amazon.infra.repository.impl;
 
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.UUID;
 import com.amazon.infra.domain.Entity;
 import com.amazon.infra.domain.EntitySpec;
@@ -12,7 +12,7 @@ import com.amazon.infra.repository.RepositoryException;
 
 public class RepositoryMemoryImpl<T> implements Repository<T>
 {
-    private volatile Map<String, Entity<T>> data = new HashMap<String, Entity<T>>();
+    private volatile Map<String, Entity<T>> data = new TreeMap<String, Entity<T>>();
 
     public RepositoryMemoryImpl()
     {
@@ -81,5 +81,17 @@ public class RepositoryMemoryImpl<T> implements Repository<T>
     public synchronized void clean() throws RepositoryException
     {
         data.clear();
+    }
+
+    @Override
+    public Entity<T> load(EntitySpec<T> filter) throws RepositoryException
+    {
+        Set<Entity<T>> results = find(filter);
+        if(results.size()==0)
+            return null;
+        if(results.size()>1)
+            throw new RepositoryException(String.format("results.size()[%s] more than 1", results.size()));
+        
+        return results.iterator().next();
     }
 }

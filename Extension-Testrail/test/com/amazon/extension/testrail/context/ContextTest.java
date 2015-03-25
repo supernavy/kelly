@@ -38,7 +38,7 @@ public class ContextTest
         testrailSystem = new SimpleTestrailSystem("Testrail System", Layer.Extension);
         new TestrailSystemAssembler(url, username, password).assemble(testrailSystem);
         TestrailAPIContext testrailAPIContext = new TestrailAPIContextImpl(makeAPIClient());
-        context = new TestrailContextImpl(testrailSystem.getEventBus(), testrailAPIContext);
+        context = new TestrailContextImpl(testrailSystem, testrailAPIContext);
     }
     
     @AfterTest

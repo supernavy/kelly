@@ -1,7 +1,13 @@
 package com.amazon.core.pm.domain.entity;
 
-public class Product
+import java.io.Serializable;
+
+public class Product implements Serializable
 {
+    /**
+     * TODO
+     */
+    private static final long serialVersionUID = -296697034219688389L;
     String name;
     String desc;
     

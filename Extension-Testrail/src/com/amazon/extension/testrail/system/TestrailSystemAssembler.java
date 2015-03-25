@@ -56,7 +56,7 @@ public class TestrailSystemAssembler implements AppSystemAssembler
     {        
         try {
             TestrailAPIContext testrailAPIContext = new TestrailAPIContextImpl(client);
-            TestrailContext testrailContext = new TestrailContextImpl(system.getEventBus(), testrailAPIContext);
+            TestrailContext testrailContext = new TestrailContextImpl(system, testrailAPIContext);
             system.getCommandBus().register(GetPrioritiesCommand.class, new GetPrioritiesCommandHandler(testrailContext));
 
             system.getCommandBus().register(AddProjectCommand.class, new AddProjectCommandHandler(testrailContext));

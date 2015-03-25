@@ -67,7 +67,7 @@ public class RepositoryFileImpl<T> implements Repository<T>
                 Entity<T> e = (Entity<T>) ois.readObject();
                 cache.put(e.getId(), e);
             }
-        } catch (IOException | ClassNotFoundException e) {
+        } catch (Exception e) {
             throw new RepositoryException(e);
         } finally {
             try {
@@ -143,5 +143,15 @@ public class RepositoryFileImpl<T> implements Repository<T>
         flush();
     }
 
-
+    @Override
+    public Entity<T> load(EntitySpec<T> filter) throws RepositoryException
+    {
+        Set<Entity<T>> results = find(filter);
+        if(results.size()==0)
+            return null;
+        if(results.size()>1)
+            throw new RepositoryException(String.format("results.size()[%s] more than 1", results.size()));
+        
+        return results.iterator().next();
+    }
 }

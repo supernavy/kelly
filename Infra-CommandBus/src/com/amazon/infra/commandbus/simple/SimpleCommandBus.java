@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.logging.Logger;
@@ -193,7 +194,18 @@ public class SimpleCommandBus implements CommandBus
     public <T extends Command<R>, R> CommandResult<R> submit(T command) throws CommandBusException
     {
         String id = send(command);
-        CommandResult<R> commandResult = new CommandResult<>(this, executionService, id, command.getReturnType());
+        CommandResult<R> commandResult = new CommandResult<R>(this, executionService, id, command.getReturnType());
         return commandResult;
+    }
+
+    @Override
+    public Set<Entity<CommandExecution<?>>> findAllCommandExecutions() throws CommandBusException
+    {
+        try {
+            Set<Entity<CommandExecution<?>>> com = commandExecutionRepository.findAll();
+            return com;
+        } catch (RepositoryException e) {
+            throw new CommandBusException(e);
+        }
     }
 }
