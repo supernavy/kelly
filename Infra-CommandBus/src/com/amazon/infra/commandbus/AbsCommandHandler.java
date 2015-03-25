@@ -15,15 +15,21 @@ public abstract class AbsCommandHandler<T extends Command<R>, R> implements Comm
         ParameterizedType p = (ParameterizedType) t ;    
         commandType = (Class<T>) p.getActualTypeArguments()[0];
 
-        if(ParameterizedType.class.isInstance(p.getActualTypeArguments()[1]))
+        returnType = guessReturnType(p.getActualTypeArguments()[1]);
+        
+    }
+    
+    @SuppressWarnings("unchecked")
+    private Class<R> guessReturnType(Type type)
+    {
+        if(ParameterizedType.class.isInstance(type))
         {
-            ParameterizedType p1 = (ParameterizedType) p.getActualTypeArguments()[1] ;
-            returnType = (Class<R>) p1.getActualTypeArguments()[0];  
+            ParameterizedType pType = (ParameterizedType) type ;
+            return guessReturnType(pType.getActualTypeArguments()[0]);
         } else
         {
-            returnType = (Class<R>) p.getActualTypeArguments()[1];
+            return (Class<R>)type;
         }
-        
     }
 
     @Override

@@ -36,10 +36,15 @@ public class Build
         return patchName;
     }
     
+    public String getName()
+    {
+        return String.format("[%s]-[%s]-[%s]", getProductInfo().getData().getName(), getBuildName(), getPatchName());
+    }
+    
     @Override
     public String toString()
     {
-        return String.format("productRef[%s],buildName[%s],patchName[]", getProductInfo(), getBuildName(), getPatchName());
+        return String.format("productInfo[%s],buildName[%s],patchName[%s]", getProductInfo(), getBuildName(), getPatchName());
     }
 
     @Override

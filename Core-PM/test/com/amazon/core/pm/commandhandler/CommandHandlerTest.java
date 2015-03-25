@@ -7,8 +7,8 @@ import org.testng.annotations.Test;
 import com.amazon.core.pm.command.CreateProductCommand;
 import com.amazon.core.pm.command.GetProductCommand;
 import com.amazon.core.pm.domain.entity.Product;
-import com.amazon.core.pm.system.ProductSystemAssembler;
-import com.amazon.core.pm.system.SimpleProductSystem;
+import com.amazon.core.pm.system.PMSystemAssembler;
+import com.amazon.core.pm.system.SimplePMSystem;
 import com.amazon.infra.domain.Entity;
 import com.amazon.infra.system.AppSystem;
 import com.amazon.infra.system.AppSystem.Layer;
@@ -21,8 +21,8 @@ public class CommandHandlerTest
     @BeforeTest
     public void init() throws AppSystemException
     {
-        appSystem = new SimpleProductSystem("demo product system", Layer.Core);
-        new ProductSystemAssembler().assemble(appSystem);
+        appSystem = new SimplePMSystem("demo product system", Layer.Core);
+        new PMSystemAssembler().assemble(appSystem);
         appSystem.start();
     }
     

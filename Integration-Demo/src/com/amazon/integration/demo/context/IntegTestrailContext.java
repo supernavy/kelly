@@ -1,31 +1,25 @@
 package com.amazon.integration.demo.context;
 
-import java.util.Map;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import com.amazon.core.qa.domain.vo.planrun.TestCaseResult;
+import java.util.Set;
 import com.amazon.infra.context.AppContextException;
+import com.amazon.infra.domain.Entity;
+import com.amazon.infra.domain.EntitySpec;
+import com.amazon.integration.demo.domain.entity.IntegTestrailPlan;
+import com.amazon.integration.demo.domain.entity.IntegTestrailProject;
 
 public interface IntegTestrailContext
 {
-    public JSONObject createTestrailPlan(String qaPlanRunId) throws AppContextException;
-    public JSONObject updateTestrailPlan(String qaPlanRunId) throws AppContextException;
-    public JSONObject loadTestrailPlan(String qaPlanRunId) throws AppContextException;
+    public Entity<IntegTestrailProject> newIntegTestrailProject(String integProductQAEntityId) throws AppContextException;
+    public Entity<IntegTestrailProject> loadIntegTestrailProject(String integTestrailProjectId) throws AppContextException;
+    public Entity<IntegTestrailProject> initIntegTestrailProject(String integTestrailProjectId) throws AppContextException;
+    public Entity<IntegTestrailProject> endIntegTestrailProject(String integTestrailProjectId) throws AppContextException;
+    public Set<Entity<IntegTestrailProject>> findIntegTestrailProject(EntitySpec<IntegTestrailProject> spec) throws AppContextException;
     
-    public JSONObject createTestrailProject(String qaProjectId) throws AppContextException;
-    public JSONObject loadTestrailProject(String qaProjectId) throws AppContextException;
-    public JSONObject updateTestrailProject(String qaProjectId) throws AppContextException;
-    public JSONArray loadTestrailConfigurations(String qaProjectId) throws AppContextException;
-    
-    public JSONObject createTestrailTestSuite(String qaProjectId, String planName) throws AppContextException;
-    public JSONObject loadTestrailTestSuite(String qaProjectId, String planName) throws AppContextException;
-    public JSONObject deleteTestrailTestSuite(String qaProjectId, String planName) throws AppContextException;
-    
-    public JSONObject createTestrailTestCase(String qaTestCaseId) throws AppContextException;
-    public JSONObject loadTestrailTestCase(String qaTestCaseId) throws AppContextException;
-    public JSONArray loadTestrailTestCases(String qaTestSuiteId) throws AppContextException;
-    
-    public JSONObject addResultForCase(String qaPlanRunId, String qaProjectId, String qaProjectPlanName, String qaProjectPlanEntryName, Long caseId, TestCaseResult resultInfo) throws AppContextException;
-    public JSONArray addResultForAutomation(String qaPlanRunId, String qaProjectId, String qaProjectPlanName, String qaProjectPlanEntryName, String automationId, TestCaseResult resultInfo) throws AppContextException;
-    public JSONArray addResultsForRun(String qaPlanRunId, String qaProjectId, String qaProjectPlanName, String qaProjectPlanEntryName, Map<Long, TestCaseResult> resultInfos) throws AppContextException;
+    public Entity<IntegTestrailPlan> newIntegTestrailPlan(String integBuildQAEntityId) throws AppContextException;
+    public Entity<IntegTestrailPlan> initIntegTestrailPlan(String integTestrailPlanId) throws AppContextException;
+    public Entity<IntegTestrailPlan> startIntegTestrailPlan(String integTestrailPlanId) throws AppContextException;
+    public Entity<IntegTestrailPlan> endIntegTestrailPlan(String integTestrailPlanId) throws AppContextException;
+    public Entity<IntegTestrailPlan> loadIntegTestrailPlan(String integTestrailPlanId) throws AppContextException;
+    public Set<Entity<IntegTestrailPlan>> findIntegTestrailPlan(EntitySpec<IntegTestrailPlan> spec) throws AppContextException;
+    public void handleTestrailPlanComplete(Long testrailPlanId) throws AppContextException;
 }

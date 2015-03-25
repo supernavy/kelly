@@ -7,24 +7,24 @@ import org.json.simple.JSONObject;
 import com.amazon.extension.testrail.api.TestrailAPI;
 import com.amazon.extension.testrail.context.TestrailAPIContext;
 import com.amazon.extension.testrail.context.TestrailContext;
-import com.amazon.extension.testrail.event.ProjectAddedEvent;
-import com.amazon.extension.testrail.event.ProjectDeletedEvent;
-import com.amazon.extension.testrail.event.TestPlanAddedEvent;
-import com.amazon.extension.testrail.event.TestPlanDeletedEvent;
-import com.amazon.extension.testrail.event.TestSuiteAddedEvent;
-import com.amazon.extension.testrail.event.TestSuiteDeletedEvent;
+import com.amazon.extension.testrail.domain.event.ProjectAddedEvent;
+import com.amazon.extension.testrail.domain.event.ProjectDeletedEvent;
+import com.amazon.extension.testrail.domain.event.TestPlanAddedEvent;
+import com.amazon.extension.testrail.domain.event.TestPlanDeletedEvent;
+import com.amazon.extension.testrail.domain.event.TestSuiteAddedEvent;
+import com.amazon.extension.testrail.domain.event.TestSuiteDeletedEvent;
 import com.amazon.infra.context.AbsAppContextImpl;
 import com.amazon.infra.context.AppContextException;
-import com.amazon.infra.eventbus.EventBus;
 import com.amazon.infra.implementation.NotImplementedException;
+import com.amazon.infra.system.AppSystem;
 
 public class TestrailContextImpl extends AbsAppContextImpl implements TestrailContext
 {
     TestrailAPIContext testrailAPIContext;
     
-    public TestrailContextImpl(EventBus eventBus, TestrailAPIContext testrailAPIContext)
+    public TestrailContextImpl(AppSystem appSystem, TestrailAPIContext testrailAPIContext)
     {
-        super(eventBus);
+        super(appSystem);
         this.testrailAPIContext = testrailAPIContext;
     }
     

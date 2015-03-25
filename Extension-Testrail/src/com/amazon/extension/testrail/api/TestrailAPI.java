@@ -443,5 +443,10 @@ public class TestrailAPI
         public static String Assignedto_Id = "assignedto_id";
         public static String Test_Id = "test_id";
         public static String Run_Id = "run_id";
+        public static String Passed_Count = "passed_count";
+        public static String Failed_Count = "failed_count";
+        public static String Retest_Count = "retest_count";
+        public static String Untest_Count = "untested_count";
+        public static String Blocked_Count = "blocked_count";
     }
 }

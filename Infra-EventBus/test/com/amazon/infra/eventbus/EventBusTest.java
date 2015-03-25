@@ -2,8 +2,6 @@ package com.amazon.infra.eventbus;
 
 import java.util.concurrent.TimeoutException;
 import org.junit.Assert;
-import com.amazon.infra.eventbus.Event;
-import com.amazon.infra.eventbus.EventBus;
 
 public class EventBusTest
 {

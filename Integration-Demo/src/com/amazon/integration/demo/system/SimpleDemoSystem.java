@@ -10,10 +10,6 @@ public class SimpleDemoSystem extends SimpleAppSystemImpl
     public SimpleDemoSystem(String name, Layer layer, AppSystem qaSystem,AppSystem testrailSystem,AppSystem releaseSystem,AppSystem productSystem) throws AppSystemException
     {
         super(name, layer);
-        getRepository(DemoSystem.Repository_IntegQAProject);
-        getRepository(DemoSystem.Repository_IntegQAPlanRun);
-        getRepository(DemoSystem.Repository_IntegQATestCase);
-        getRepository(DemoSystem.Repository_IntegQATestSuite);
         setDependency(DemoSystem.System_QA, qaSystem);
         setDependency(DemoSystem.System_Testrail, testrailSystem);
         setDependency(DemoSystem.System_RM, releaseSystem);

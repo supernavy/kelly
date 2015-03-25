@@ -4,13 +4,10 @@ import org.testng.Assert;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
-import com.amazon.core.pm.context.ProductContext;
 import com.amazon.core.pm.context.impl.ProductContextImpl;
 import com.amazon.core.pm.domain.entity.Product;
-import com.amazon.core.pm.system.ProductSystem;
-import com.amazon.core.pm.system.SimpleProductSystem;
+import com.amazon.core.pm.system.SimplePMSystem;
 import com.amazon.infra.domain.Entity;
-import com.amazon.infra.repository.Repository;
 import com.amazon.infra.system.AppSystem;
 import com.amazon.infra.system.AppSystem.Layer;
 import com.amazon.infra.system.AppSystemException;
@@ -23,9 +20,8 @@ public class ProductContexTest
     @BeforeTest
     public void init() throws AppSystemException 
     {
-        productSystem = new SimpleProductSystem("Product System", Layer.Core);
-        Repository<Product> productRepo = productSystem.getRepository(ProductSystem.Repository_Product);
-        context = new ProductContextImpl(productSystem.getEventBus(), productRepo);
+        productSystem = new SimplePMSystem("Product System", Layer.Core);
+        context = new ProductContextImpl(productSystem);
     }
     
     @AfterTest
