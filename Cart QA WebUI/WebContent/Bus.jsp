@@ -3,6 +3,7 @@
 <%@ page import="java.util.Set" %>
 <%@ page import="com.amazon.infra.domain.Entity" %>
 <%@ page import="com.amazon.infra.commandbus.*" %>
+<%@ page import="com.amazon.infra.eventbus.*" %>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
@@ -46,6 +47,45 @@
 	        	</td>
 	        	<td>
 	        	<%=p.getData().getResult()%>
+	        	</td>
+	    	</tr>
+	    	<%
+	    }
+	}
+%>
+</tbody>
+</table>
+
+<h2>Emitted Events</h2>
+<table border="1">
+<thead>
+<tr>
+	<td>Id</td>
+	<td>HappenTime</td>
+	<td>Status</td>
+	<td>Event</td>
+</tr>
+</thead>
+<tbody>
+<% 	
+	Set<Entity<EventDistribution<? extends Event>>> allEventDistributionInfos = (Set<Entity<EventDistribution<? extends Event>>>)session.getAttribute("allEventDistributionInfos"); 
+	if(allEventDistributionInfos!=null)
+	{
+	    for(Entity<EventDistribution<? extends Event>> p: allEventDistributionInfos)
+	    {
+	        %>
+	        <tr>
+	        	<td>
+	        	<%=p.getId()%>
+	        	</td>
+	        	<td>
+	        	<%=p.getData().getHappenTime()%>
+	        	</td>
+	        	<td>
+	        	<%=p.getData().getStatus()%>
+	        	</td>
+	        	<td>
+	        	<%=p.getData().getEvent()%>
 	        	</td>
 	    	</tr>
 	    	<%

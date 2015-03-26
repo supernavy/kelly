@@ -1,9 +1,9 @@
 package com.amazon.infra.repository.impl;
 
-import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeMap;
 import java.util.UUID;
 import com.amazon.infra.domain.Entity;
 import com.amazon.infra.domain.EntitySpec;
@@ -12,7 +12,7 @@ import com.amazon.infra.repository.RepositoryException;
 
 public class RepositoryMemoryImpl<T> implements Repository<T>
 {
-    private volatile Map<String, Entity<T>> data = new TreeMap<String, Entity<T>>();
+    private volatile Map<String, Entity<T>> data = new LinkedHashMap<String, Entity<T>>();
 
     public RepositoryMemoryImpl()
     {
@@ -54,15 +54,14 @@ public class RepositoryMemoryImpl<T> implements Repository<T>
     @Override
     public synchronized Set<Entity<T>> findAll() throws RepositoryException
     {
-        Set<Entity<T>> all = new HashSet<Entity<T>>();
-        all.addAll(data.values());
+        Set<Entity<T>> all = new LinkedHashSet<Entity<T>>(data.values());
         return all;
     }
 
     @Override
     public synchronized Set<Entity<T>> find(EntitySpec<T> filter) throws RepositoryException
     {
-        Set<Entity<T>> matched = new HashSet<Entity<T>>();
+        Set<Entity<T>> matched = new LinkedHashSet<Entity<T>>();
         for (Entity<T> entity : findAll()) {
             if (filter.matches(entity)) {
                 matched.add(entity);

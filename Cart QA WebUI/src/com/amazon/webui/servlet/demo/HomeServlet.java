@@ -48,6 +48,9 @@ public class HomeServlet extends HttpServlet
             
             Set<Entity<ExternalSignoff>> allExternalSignoffInfos = demoSystem.getCommandBus().submit(new ExternalSignoffGetAllCommand()).getResult();
             req.getSession().setAttribute("allExternalSignoffInfos", allExternalSignoffInfos);
+            
+            req.getSession().setAttribute("system", demoSystem);
+            
             resp.sendRedirect(req.getContextPath()+"/demo/Home.jsp");
         } catch (Exception e) {
             throw new ServletException(e);

@@ -79,8 +79,8 @@ public class QAContextImpl extends AbsAppContextImpl implements QAContext
         {
             switch(newStatus)
             {
-                case Ready: publishEvent(new ProductQAReadyEvent(id));
-                case End: publishEvent(new ProductQAEndEvent(id));
+                case Ready: publishEvent(new ProductQAReadyEvent(id)); break;
+                case End: publishEvent(new ProductQAEndEvent(id)); break;
                 default:
                     break;
             }            
@@ -171,8 +171,8 @@ public class QAContextImpl extends AbsAppContextImpl implements QAContext
         {
             switch(newStatus)
             {
-                case InProgress: publishEvent(new BuildQAInProgressEvent(id));
-                case End: publishEvent(new BuildQAEndEvent(id));
+                case InProgress: publishEvent(new BuildQAInProgressEvent(id)); break;
+                case End: publishEvent(new BuildQAEndEvent(id)); break;
                 default:
                     break;
             }            

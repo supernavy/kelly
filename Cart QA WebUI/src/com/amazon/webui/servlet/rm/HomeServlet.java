@@ -34,6 +34,8 @@ public class HomeServlet extends HttpServlet
             Set<Entity<Product>> allProductInfos = pmSystem.getCommandBus().submit(new GetAllProductsCommand()).getResult();
             req.getSession().setAttribute("allProductInfos", allProductInfos);
             
+            req.getSession().setAttribute("system", rmSystem);
+            
             resp.sendRedirect(req.getContextPath()+"/rm/Home.jsp");
         } catch (Exception e) {
             throw new ServletException(e);

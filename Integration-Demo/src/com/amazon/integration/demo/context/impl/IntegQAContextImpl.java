@@ -107,9 +107,9 @@ public class IntegQAContextImpl extends AbsAppContextImpl implements IntegQACont
         {
             switch(newStatus)
             {
-                case Preparing: publishEvent(new IntegProductQAPreparingEvent(id));
-                case Testing: publishEvent(new IntegProductQATestingEvent(id));
-                case End: publishEvent(new IntegProductQAEndEvent(id));
+                case Preparing: publishEvent(new IntegProductQAPreparingEvent(id)); break;
+                case Testing: publishEvent(new IntegProductQATestingEvent(id)); break;
+                case End: publishEvent(new IntegProductQAEndEvent(id)); break;
                 default:
                     break;
             }            
@@ -165,9 +165,9 @@ public class IntegQAContextImpl extends AbsAppContextImpl implements IntegQACont
         {
             switch(newStatus)
             {
-                case Preparing: publishEvent(new IntegBuildQAPreparingEvent(id));
-                case Testing: publishEvent(new IntegBuildQATestingEvent(id));
-                case End: publishEvent(new IntegBuildQAEndEvent(id));
+                case Preparing: publishEvent(new IntegBuildQAPreparingEvent(id)); break;
+                case Testing: publishEvent(new IntegBuildQATestingEvent(id)); break;
+                case End: publishEvent(new IntegBuildQAEndEvent(id)); break;
                 default:
                     break;
             }

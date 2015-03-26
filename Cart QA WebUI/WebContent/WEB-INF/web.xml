@@ -101,12 +101,12 @@
   </servlet-mapping>
   <servlet>
     <description></description>
-    <display-name>CommandBusServlet</display-name>
-    <servlet-name>CommandBusServlet</servlet-name>
-    <servlet-class>com.amazon.webui.servlet.CommandBusServlet</servlet-class>
+    <display-name>BusServlet</display-name>
+    <servlet-name>BusServlet</servlet-name>
+    <servlet-class>com.amazon.webui.servlet.BusServlet</servlet-class>
   </servlet>
   <servlet-mapping>
-    <servlet-name>CommandBusServlet</servlet-name>
-    <url-pattern>/CommandBus</url-pattern>
+    <servlet-name>BusServlet</servlet-name>
+    <url-pattern>/Bus</url-pattern>
   </servlet-mapping>
 </web-app>

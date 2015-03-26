@@ -1,6 +1,8 @@
 package com.amazon.infra.eventbus;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -9,7 +11,7 @@ public class EventDistribution<T extends Event>
     Logger logger = Logger.getLogger(EventDistribution.class.getName());
     public enum Status 
     {
-        Init(false,false), Disseminating(true,false), PartiallyDisclosed(true,false), CompletelyDisclosed(true,true);
+        Init(false,false), Disseminating(true,false), PartiallyDisclosed(true,false), CompletelyDisclosed(true,true), Dropped(true, true);
         
         boolean ended;
         boolean started;
@@ -30,13 +32,14 @@ public class EventDistribution<T extends Event>
     
     T event;
     Status status;
+    Date happenTime;
     List<EventHandlerDistribution<? extends Event>> errorSubDistributions = new ArrayList<EventHandlerDistribution<? extends Event>>();
     List<EventHandlerDistribution<? extends Event>> doneSubDistributions = new ArrayList<EventHandlerDistribution<? extends Event>>();
     List<EventHandlerDistribution<? extends Event>> subDistributions = new ArrayList<EventHandlerDistribution<? extends Event>>();
     
     public EventDistribution(T event, List<EventHandlerDistribution<? extends Event>> subDistributions)
     {
-        this(event, Status.Init, subDistributions, null, null);
+        this(event, subDistributions.size()>0?Status.Init:Status.Dropped, subDistributions, null, null);
     }
     
     public EventDistribution(T event, Status status, List<EventHandlerDistribution<? extends Event>> subDistributions, List<EventHandlerDistribution<? extends Event>> doneSubDistributions, List<EventHandlerDistribution<? extends Event>> errorSubDistributions)
@@ -49,6 +52,8 @@ public class EventDistribution<T extends Event>
             this.doneSubDistributions.addAll(doneSubDistributions);
         if(errorSubDistributions!=null)
             this.errorSubDistributions.addAll(errorSubDistributions);
+        
+        happenTime = Calendar.getInstance().getTime();
     }
     
     public EventDistribution<T> setStatus(Status status)
@@ -59,6 +64,11 @@ public class EventDistribution<T extends Event>
     public Status getStatus()
     {
         return status;
+    }
+    
+    public Date getHappenTime()
+    {
+        return happenTime;
     }
     
     public T getEvent()

@@ -45,6 +45,9 @@ public class HomeServlet extends HttpServlet
             
             Set<Entity<BuildQA>> allBuildQAInfos = qaSystem.getCommandBus().submit(new BuildQAGetAllCommand()).getResult();
             req.getSession().setAttribute("allBuildQAInfos", allBuildQAInfos);
+            
+            req.getSession().setAttribute("system", qaSystem);
+            
             resp.sendRedirect(req.getContextPath()+"/qa/Home.jsp");
         } catch (Exception e) {
             throw new ServletException(e);

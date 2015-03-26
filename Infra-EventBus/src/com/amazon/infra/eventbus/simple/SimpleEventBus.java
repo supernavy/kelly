@@ -4,13 +4,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Logger;
 import com.amazon.infra.domain.Entity;
+import com.amazon.infra.eventbus.AbsEventHandler;
 import com.amazon.infra.eventbus.Event;
 import com.amazon.infra.eventbus.EventBus;
 import com.amazon.infra.eventbus.EventBusException;
 import com.amazon.infra.eventbus.EventDistribution;
-import com.amazon.infra.eventbus.AbsEventHandler;
 import com.amazon.infra.eventbus.EventHandlerDistribution;
 import com.amazon.infra.repository.Repository;
 import com.amazon.infra.repository.RepositoryException;
@@ -66,12 +67,18 @@ public class SimpleEventBus implements EventBus
     public <T extends Event> String publish(T event) throws EventBusException
     {
         try {
+            logger.fine(String.format("bus recieved event[%s]", event));
             EventDistribution<T> newEventDistribution = new EventDistribution<T>(event, getEventHanderDistributions(event));
             Entity<EventDistribution<? extends Event>> entity = eventDistributionRepository.createEntity(newEventDistribution);
-            synchronized (queue) {
-                queue.getData().add(entity.getId());
+            if(entity.getData().getStatus()!=EventDistribution.Status.Dropped){
+                synchronized (queue) {
+                    queue.getData().add(entity.getId());
+                }
+                logger.fine(String.format("bus persists event[%s] with id[%s]", event, entity.getId()));
+            } else {
+                logger.fine(String.format("bus drop event[%s] because no handler for it", event));
             }
-            logger.fine(String.format("bus recieved event[%s] with id[%s]", event, entity.getId()));
+            
             verify(entity.getId());
             return entity.getId();
         } catch (RepositoryException e) {
@@ -100,7 +107,7 @@ public class SimpleEventBus implements EventBus
         if(com.getData().getStatus().isEnded())
         {
             logger.fine(String.format("EventDistribution status[%s], remove EventDistribution[%s]", com.getData().getStatus(), com));
-            eventDistributionRepository.delete(id);
+//            eventDistributionRepository.delete(id);
         }
     }
     
@@ -167,6 +174,16 @@ public class SimpleEventBus implements EventBus
         try {
             queueRepository.updateEntity(queue.getId(), queue.getData());
             dispatcher.stop();
+        } catch (RepositoryException e) {
+            throw new EventBusException(e);
+        }
+    }
+
+    @Override
+    public Set<Entity<EventDistribution<? extends Event>>> findAllEvents() throws EventBusException
+    {
+        try {
+            return eventDistributionRepository.findAll();
         } catch (RepositoryException e) {
             throw new EventBusException(e);
         }

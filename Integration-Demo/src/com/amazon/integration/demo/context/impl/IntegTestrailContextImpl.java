@@ -91,8 +91,8 @@ public class IntegTestrailContextImpl extends AbsAppContextImpl implements Integ
         {
             switch(newStatus)
             {
-                case Ready: publishEvent(new IntegTestrailProjectReadyEvent(id));
-                case End: publishEvent(new IntegTestrailProjectEndEvent(id));
+                case Ready: publishEvent(new IntegTestrailProjectReadyEvent(id)); break;
+                case End: publishEvent(new IntegTestrailProjectEndEvent(id)); break;
                 default:
                     break;
             }            
@@ -230,9 +230,9 @@ public class IntegTestrailContextImpl extends AbsAppContextImpl implements Integ
         {
             switch(newStatus)
             {
-                case Ready: publishEvent(new IntegTestrailPlanReadyEvent(id));
-                case TestInProgress: publishEvent(new IntegTestrailPlanTestInProgressEvent(id));
-                case End: publishEvent(new IntegTestrailPlanEndEvent(id));
+                case Ready: publishEvent(new IntegTestrailPlanReadyEvent(id)); break;
+                case TestInProgress: publishEvent(new IntegTestrailPlanTestInProgressEvent(id)); break;
+                case End: publishEvent(new IntegTestrailPlanEndEvent(id)); break;
                 default:
                     break;
             }            

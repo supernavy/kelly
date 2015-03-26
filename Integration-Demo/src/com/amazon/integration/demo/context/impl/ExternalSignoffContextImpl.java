@@ -54,9 +54,9 @@ public class ExternalSignoffContextImpl extends AbsAppContextImpl implements Ext
         {
             switch(newStatus)
             {
-                case Assigned: publishEvent(new ExternalSignoffAssignedEvent(id));
-                case InProgress: publishEvent(new ExternalSignoffInProgressEvent(id));
-                case End: publishEvent(new ExternalSignoffEndEvent(id));
+                case Assigned: publishEvent(new ExternalSignoffAssignedEvent(id)); break;
+                case InProgress: publishEvent(new ExternalSignoffInProgressEvent(id)); break;
+                case End: publishEvent(new ExternalSignoffEndEvent(id)); break;
                 default:
                     break;
             }
