@@ -13,6 +13,7 @@ public interface QAContext
     public Entity<ProductQA> newProductQA(String pmProductId) throws AppContextException;
     public Entity<ProductQA> loadProductQA(String productQAId) throws AppContextException;
     public Entity<ProductQA> addPlanProductQA(String productQAId, Plan plan) throws AppContextException;
+    public Entity<ProductQA> updateProductQA(String productQAId, ProductQA productQA) throws AppContextException;
     public Entity<ProductQA> readyProductQA(String productQAId) throws AppContextException;
     public Entity<ProductQA> endProductQA(String productQAId) throws AppContextException;
     public Set<Entity<ProductQA>> findProductQA(EntitySpec<ProductQA> spec) throws AppContextException;

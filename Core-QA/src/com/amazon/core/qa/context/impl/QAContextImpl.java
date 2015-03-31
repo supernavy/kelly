@@ -13,6 +13,7 @@ import com.amazon.core.qa.domain.event.BuildQANewEvent;
 import com.amazon.core.qa.domain.event.ProductQAEndEvent;
 import com.amazon.core.qa.domain.event.ProductQANewEvent;
 import com.amazon.core.qa.domain.event.ProductQAReadyEvent;
+import com.amazon.core.qa.domain.event.ProductQAUpdateEvent;
 import com.amazon.core.qa.domain.vo.productqa.Plan;
 import com.amazon.core.qa.system.QASystem;
 import com.amazon.core.rm.command.GetBuildCommand;
@@ -74,10 +75,10 @@ public class QAContextImpl extends AbsAppContextImpl implements QAContext
         }
     }
 
-    private void publishProductQAEvent(ProductQA.Status oldStatus, ProductQA.Status newStatus, String id) throws AppContextException {
-        if(!oldStatus.equals(newStatus))
+    private void publishProductQAEvent(ProductQA oldOne, ProductQA newOne, String id) throws AppContextException {
+        if(!oldOne.equals(newOne))
         {
-            switch(newStatus)
+            switch(newOne.getStatus())
             {
                 case Ready: publishEvent(new ProductQAReadyEvent(id)); break;
                 case End: publishEvent(new ProductQAEndEvent(id)); break;
@@ -92,14 +93,14 @@ public class QAContextImpl extends AbsAppContextImpl implements QAContext
     {
         try {
             Entity<ProductQA> productQAEntity = productQARepo.load(productQAId);
-            ProductQA.Status oldStatus = productQAEntity.getData().getStatus();
+            ProductQA oldOne = productQAEntity.getData();
             
             ProductQA productQA = productQAEntity.getData().ready();
             
             productQAEntity = productQARepo.updateEntity(productQAEntity.getId(), productQA);
-            ProductQA.Status newStatus = productQAEntity.getData().getStatus();
+            ProductQA newOne = productQAEntity.getData();
             
-            publishProductQAEvent(oldStatus, newStatus, productQAEntity.getId());
+            publishProductQAEvent(oldOne, newOne, productQAEntity.getId());
             
             return productQAEntity;
         } catch (RepositoryException e) {
@@ -112,14 +113,14 @@ public class QAContextImpl extends AbsAppContextImpl implements QAContext
     {
         try {
             Entity<ProductQA> productQAEntity = productQARepo.load(productQAId);
-            ProductQA.Status oldStatus = productQAEntity.getData().getStatus();
+            ProductQA oldData = productQAEntity.getData();
             
             ProductQA productQA = productQAEntity.getData().end();
             
             productQAEntity = productQARepo.updateEntity(productQAEntity.getId(), productQA);
-            ProductQA.Status newStatus = productQAEntity.getData().getStatus();
+            ProductQA newData = productQAEntity.getData();
             
-            publishProductQAEvent(oldStatus, newStatus, productQAEntity.getId());
+            publishProductQAEvent(oldData, newData, productQAEntity.getId());
             
             return productQAEntity;
         } catch (RepositoryException e) {
@@ -226,14 +227,14 @@ public class QAContextImpl extends AbsAppContextImpl implements QAContext
     {
         try {
             Entity<ProductQA> productQAEntity = productQARepo.load(productQAId);
-            ProductQA.Status oldStatus = productQAEntity.getData().getStatus();
+            ProductQA oldData = productQAEntity.getData();
             
             ProductQA productQA = productQAEntity.getData().addPlan(plan);
             
             productQAEntity = productQARepo.updateEntity(productQAEntity.getId(), productQA);
-            ProductQA.Status newStatus = productQAEntity.getData().getStatus();
+            ProductQA newData = productQAEntity.getData();
             
-            publishProductQAEvent(oldStatus, newStatus, productQAEntity.getId());
+            publishProductQAEvent(oldData, newData, productQAEntity.getId());
             
             return productQAEntity;
         } catch (RepositoryException e) {
@@ -258,6 +259,25 @@ public class QAContextImpl extends AbsAppContextImpl implements QAContext
     {
         try {
             return buildQARepo.find(spec);
+        } catch (RepositoryException e) {
+            throw new AppContextException(e);
+        }
+    }
+
+
+    @Override
+    public Entity<ProductQA> updateProductQA(String productQAId, ProductQA productQA) throws AppContextException
+    {
+        try {
+            Entity<ProductQA> productQAEntity = productQARepo.load(productQAId);
+            ProductQA oldData = productQAEntity.getData();
+            
+            productQAEntity = productQARepo.updateEntity(productQAEntity.getId(), productQA);
+            ProductQA newData = productQAEntity.getData();
+            
+            publishProductQAEvent(oldData, newData, productQAEntity.getId());
+            publishEvent(new ProductQAUpdateEvent(productQAId, oldData, newData));
+            return productQAEntity;
         } catch (RepositoryException e) {
             throw new AppContextException(e);
         }

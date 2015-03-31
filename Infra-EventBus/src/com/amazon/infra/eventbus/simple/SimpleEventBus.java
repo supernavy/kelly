@@ -12,6 +12,7 @@ import com.amazon.infra.eventbus.Event;
 import com.amazon.infra.eventbus.EventBus;
 import com.amazon.infra.eventbus.EventBusException;
 import com.amazon.infra.eventbus.EventDistribution;
+import com.amazon.infra.eventbus.EventDistribution.Status;
 import com.amazon.infra.eventbus.EventHandlerDistribution;
 import com.amazon.infra.repository.Repository;
 import com.amazon.infra.repository.RepositoryException;
@@ -99,6 +100,16 @@ public class SimpleEventBus implements EventBus
             }
         }
         return null;
+    }
+    
+    public void dropOne(String id) throws RepositoryException
+    {
+        synchronized (queue) {
+            queue.getData().remove(id);
+        }
+        Entity<EventDistribution<? extends Event>> com = eventDistributionRepository.load(id);
+        com.getData().setStatus(Status.Dropped);
+        eventDistributionRepository.updateEntity(id, com.getData());
     }
 
     public void verify(String id) throws RepositoryException

@@ -65,4 +65,11 @@ public class ProductQA
         ps.put(plan.getName(), plan);
         return new ProductQA(getProductInfo(), getStatus(), ps);
     }
+    
+    public ProductQA updatePlan(Plan plan)
+    {
+        Map<String,Plan> ps = getPlans();
+        ps.put(plan.getName(), plan);
+        return new ProductQA(getProductInfo(), getStatus(), ps);
+    }
 }

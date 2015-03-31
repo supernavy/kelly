@@ -12,6 +12,7 @@ import com.amazon.core.qa.command.ProductQAGetAllCommand;
 import com.amazon.core.qa.command.ProductQAGetCommand;
 import com.amazon.core.qa.command.ProductQANewCommand;
 import com.amazon.core.qa.command.ProductQAReadyCommand;
+import com.amazon.core.qa.command.ProductQAUpdateCommand;
 import com.amazon.core.qa.commandhandler.BuildQAEndCommandHandler;
 import com.amazon.core.qa.commandhandler.BuildQAGetAllCommandHandler;
 import com.amazon.core.qa.commandhandler.BuildQAGetCommandHandler;
@@ -23,6 +24,7 @@ import com.amazon.core.qa.commandhandler.ProductQAGetAllCommandHandler;
 import com.amazon.core.qa.commandhandler.ProductQAGetCommandHandler;
 import com.amazon.core.qa.commandhandler.ProductQANewCommandHandler;
 import com.amazon.core.qa.commandhandler.ProductQAReadyCommandHandler;
+import com.amazon.core.qa.commandhandler.ProductQAUpdateCommandHandler;
 import com.amazon.core.qa.context.QAContext;
 import com.amazon.core.qa.context.impl.QAContextImpl;
 import com.amazon.core.qa.eventhandler.pm.ProductNewEventHandler;
@@ -53,6 +55,7 @@ public class QASystemAssembler implements AppSystemAssembler
         system.getCommandBus().register(ProductQAReadyCommand.class, new ProductQAReadyCommandHandler(qaContext));
         system.getCommandBus().register(ProductQAEndCommand.class, new ProductQAEndCommandHandler(qaContext));
         system.getCommandBus().register(ProductQAAddPlanCommand.class, new ProductQAAddPlanCommandHandler(qaContext));
+        system.getCommandBus().register(ProductQAUpdateCommand.class, new ProductQAUpdateCommandHandler(qaContext));
         
         system.getCommandBus().register(BuildQANewCommand.class, new BuildQANewCommandHandler(qaContext));
         system.getCommandBus().register(BuildQAGetCommand.class, new BuildQAGetCommandHandler(qaContext));
